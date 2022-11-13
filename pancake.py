@@ -28,9 +28,9 @@ while True:
             bid = order_book['bids'][0][0]
             price = uniswap.get_price_input(token["contract"], USDT, 10**token["decimals"])
             print(token["symbol"], ":", token["contract"])
-            print("pancake price ", ":", price/(10**token["decimals"]))
+            print("pancake price ", ":", price/(10**18))
             print("binance price ", ":", bid)
-            print("diff", ":",  "%.2f" %(100 * ((price/(10**token["decimals"]) - bid)/bid)), "%")
+            print("diff", ":",  "%.2f" %(100 * ((price/(10**18) - bid)/bid)), "%")
             print(" ")
         print("------")
     except Exception as e:
