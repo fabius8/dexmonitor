@@ -18,18 +18,22 @@ print(tokens)
 
 BUSD = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"
 USDT = "0x55d398326f99059fF775485246999027B3197955"
-
+ETH = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"
 BASE = "USDT"
 
 while True:
-    time.sleep(5)
-    for token in tokens:
-        order_book = binance.fetch_order_book(token["symbol"] + "/" + BASE)
-        bid = order_book['bids'][0][0]
-        price = uniswap.get_price_input(token["contract"], USDT, 10**18)
-        print(token["symbol"], ":", token["contract"])
-        print("pancake price ", ":", price/10**18)
-        print("binance price ", ":", bid)
+    try:
+        for token in tokens:
+            order_book = binance.fetch_order_book(token["symbol"] + "/" + BASE)
+            bid = order_book['bids'][0][0]
+            price = uniswap.get_price_input(token["contract"], USDT, 10**token["decimals"])
+            print(token["symbol"], ":", token["contract"])
+            print("pancake price ", ":", price/(10**token["decimals"]))
+            print("binance price ", ":", bid)
+            print("diff", ":",  "%.2f" %(100 * ((price/(10**token["decimals"]) - bid)/bid)), "%")
+            print(" ")
         print("------")
-
+    except Exception as e:
+        pass
+    time.sleep(5)
 
