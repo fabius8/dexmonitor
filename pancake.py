@@ -22,6 +22,9 @@ USDT = "0x55d398326f99059fF775485246999027B3197955"
 ETH = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"
 BASE = "USDT"
 
+def beep():
+    print("\a\a\a\a\a")
+
 while True:
     try:
         for token in tokens:
@@ -46,8 +49,9 @@ while True:
             print("binance price ", ":", bid)
             diff = 100 * ((price/(10**18) - bid)/bid)
             print("diff", ":",  "%.2f" %diff, "%")
-            if abs(diff) > 2:
+            if abs(diff) > 0.1:
                 print("😱 diff is big!")
+                beep()
             print(" ")
         print("------")
     except Exception as e:
