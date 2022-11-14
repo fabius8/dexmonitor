@@ -49,7 +49,7 @@ while True:
             print("binance price ", ":", bid)
             diff = 100 * ((price/(10**18) - bid)/bid)
             print("diff", ":",  "%.2f" %diff, "%")
-            if abs(diff) > 0.1:
+            if abs(diff) > 2:
                 print("😱 diff is big!")
                 beep()
             print(" ")
