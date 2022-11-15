@@ -11,8 +11,11 @@ version = 2                       # specify which version of Uniswap to use
 provider = "https://bsc-dataseed.binance.org/"    # can also be set through the environment variable `PROVIDER`
 uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
 print("init...")
-binance = ccxt.binance()
-binance.load_markets()
+try:
+    binance = ccxt.binance()
+    binance.load_markets()
+except Exception as e:
+    pass
 
 logging.basicConfig(level=logging.ERROR)
 tokens = json.load(open('token.json'))
@@ -22,42 +25,20 @@ USDT = "0x55d398326f99059fF775485246999027B3197955"
 ETH = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"
 BASE = "USDT"
 
-exPrice = {}
-
-def initPrice():
-    global exPrice
-    for token in tokens:
-        order_book = binance.fetch_order_book(token["symbol"] + "/" + BASE)
-        bid = order_book['bids'][0][0]
-        exPrice[token["symbol"]] = bid
-
-initPrice()
-print(exPrice)
-
 def beep():
     print("\a")
 
 while True:
     try:
         for token in tokens:
-            #print("route :", token["route"])
+            print(token["symbol"], token["contract"])
             # buy mode
-            buyAmount = 100 / exPrice[token["symbol"]]
-            if buyAmount < 1:
-                buyAmount = 1
-            else:
-                buyAmount = int(buyAmount)
-            route = token["Route"]
-            if route:
-                route = token["Route"][::-1]
-            print(token["Route"])
-            print(route)
-            buyPrice = uniswap.get_price_input(Web3.toChecksumAddress(token["contract"]), BUSD, buyAmount * 10**token["decimals"], route)
-            print(token["symbol"], ":", token["contract"])
-            buyPrice = buyPrice / buyAmount
-            buyPrice = buyPrice / (10**18)
+            buyAmount = uniswap.get_price_input(BUSD, Web3.toChecksumAddress(token["contract"]), 100 * 10**18, None, token["buyRoute"])
+            buyAmount = buyAmount / 10**token["decimals"]
+            buyPrice = 100 / buyAmount
+
             # sell mode
-            sellAmount = uniswap.get_price_output(Web3.toChecksumAddress(token["contract"]), BUSD, 100 * 10**18, None, token["Route"])
+            sellAmount = uniswap.get_price_output(Web3.toChecksumAddress(token["contract"]), BUSD, 100 * 10**18, None, token["sellRoute"])
             sellAmount = sellAmount / 10**token["decimals"]
             sellPrice = 100 / sellAmount
             try:
@@ -79,6 +60,7 @@ while True:
             if buy_diff > 2:
                 print("😱 profit is big! Pancake -> Binance")
                 beep()
+            print(" ")
             if sell_diff > 2:
                 print("😱 profit is big! Binance -> Pancake")
                 beep()
