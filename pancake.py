@@ -4,6 +4,7 @@ import ccxt
 import logging
 import time
 import json
+from datetime import datetime
 
 address = None         # or None if you're not going to make transactions
 private_key = None  # or None if you're not going to make transactions
@@ -29,9 +30,10 @@ def beep():
     print("\a")
 
 while True:
+    count = 1
     try:
         for token in tokens:
-            print(token["symbol"], token["contract"])
+            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), count, "/", len(tokens), token["symbol"], token["contract"])
             # buy mode
             buyAmount = uniswap.get_price_input(BUSD, Web3.toChecksumAddress(token["contract"]), 100 * 10**18, None, token["buyRoute"])
             buyAmount = buyAmount / 10**token["decimals"]
@@ -65,6 +67,7 @@ while True:
                 print("😱 profit is big! Binance -> Pancake")
                 beep()
             print(" ")
+            count = count + 1
         print("------")
     except Exception as e:
         print(e)
