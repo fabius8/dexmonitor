@@ -47,12 +47,17 @@ while True:
                 buyAmount = 1
             else:
                 buyAmount = int(buyAmount)
-            buyPrice = uniswap.get_price_input( Web3.toChecksumAddress(token["contract"]), BUSD, buyAmount * 10**token["decimals"], None, token["buyRoute"])
+            route = token["Route"]
+            if route:
+                route = token["Route"][::-1]
+            print(token["Route"])
+            print(route)
+            buyPrice = uniswap.get_price_input(Web3.toChecksumAddress(token["contract"]), BUSD, buyAmount * 10**token["decimals"], route)
             print(token["symbol"], ":", token["contract"])
             buyPrice = buyPrice / buyAmount
             buyPrice = buyPrice / (10**18)
             # sell mode
-            sellAmount = uniswap.get_price_output(Web3.toChecksumAddress(token["contract"]), BUSD, 100 * 10**18, None, token["buyRoute"])
+            sellAmount = uniswap.get_price_output(Web3.toChecksumAddress(token["contract"]), BUSD, 100 * 10**18, None, token["Route"])
             sellAmount = sellAmount / 10**token["decimals"]
             sellPrice = 100 / sellAmount
             try:
