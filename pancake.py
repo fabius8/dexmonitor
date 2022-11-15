@@ -57,11 +57,11 @@ while True:
             print("B diff", ":",  "%.2f" %buy_diff, "%")
             print("S diff", ":",  "%.2f" %sell_diff, "%")
 
-            if buy_diff > 2:
+            if buy_diff > 1:
                 print("😱 profit is big! Pancake -> Binance")
                 beep()
             print(" ")
-            if sell_diff > 2:
+            if sell_diff > 1:
                 print("😱 profit is big! Binance -> Pancake")
                 beep()
             print(" ")
