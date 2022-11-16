@@ -99,7 +99,7 @@ while True:
             
 
 
-            if buy_diff > -2:
+            if buy_diff > 1:
                 text = token["symbol"] + " " + token["contract"] + "\n"
                 text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
                 text += "binance price " + ": " + str(bid) + "\n"
@@ -109,7 +109,7 @@ while True:
                 sendmsg(text)
                 beep()
             print(" ")
-            if sell_diff > -2:
+            if sell_diff > 1:
                 text = token["symbol"] + " " + token["contract"] + "\n"
                 text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
                 text += "binance price " + ": " + str(bid) + "\n"
