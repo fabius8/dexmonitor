@@ -71,6 +71,7 @@ while True:
         print("------")
     except Exception as e:
         print(e)
+        time.sleep(120)
         pass
     time.sleep(5)
 
