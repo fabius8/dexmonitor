@@ -3,20 +3,19 @@ from web3 import Web3
 import ccxt
 import logging
 import time
-import json
-from datetime import datetime
 
+import json
+import requests
+from datetime import datetime, timezone, timedelta
+
+tz = timezone(timedelta(hours=+8))
 address = None         # or None if you're not going to make transactions
 private_key = None  # or None if you're not going to make transactions
 version = 2                       # specify which version of Uniswap to use
 provider = "https://bsc-dataseed.binance.org/"    # can also be set through the environment variable `PROVIDER`
 uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
 print("init...")
-try:
-    binance = ccxt.binance()
-    binance.load_markets()
-except Exception as e:
-    pass
+
 
 logging.basicConfig(level=logging.ERROR)
 tokens = json.load(open('token.json'))
@@ -28,6 +27,45 @@ BASE = "USDT"
 
 def beep():
     print("\a")
+
+alert = None
+try:
+    alert = json.load(open('alert.json'))
+except Exception as e:
+    pass
+
+
+def sendmsg(text):
+    if alert is None:
+        return
+    params = {
+        "corpid": alert['corpid'],
+        "corpsecret": alert['corpsecret']
+    }
+    url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
+    r = requests.get(url, params = params)
+    access_token = r.json()["access_token"]
+    url = "https://qyapi.weixin.qq.com/cgi-bin/message/send"
+    params = {
+        "access_token": access_token
+    }
+    print(access_token)
+    data = {
+        "touser": "@all",
+        "msgtype" : "text",
+        "agentid" : alert['agentid'],
+        "text" : {
+            "content" : text
+        }
+    }
+    r = requests.post(url, params = params, json = data)
+    print(r.json())
+
+try:
+    binance = ccxt.binance()
+    binance.load_markets()
+except Exception as e:
+    pass
 
 while True:
     count = 1
@@ -58,13 +96,27 @@ while True:
             sell_diff = 100 * ((sellPrice - bid)/bid)
             print("B diff", ":",  "%.2f" %buy_diff, "%")
             print("S diff", ":",  "%.2f" %sell_diff, "%")
+            
 
-            if buy_diff > 1:
-                print("😱 profit is big! Pancake -> Binance")
+
+            if buy_diff > -2:
+                text = token["symbol"] + " " + token["contract"] + "\n"
+                text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
+                text += "binance price " + ": " + str(bid) + "\n"
+                print("😱 profit is big! Pancake -> Binance ")
+                text += "pancake B price" + ": " + str(buyPrice) + " Amount: " +  str(buyAmount) + "\n"
+                text += "😱 profit is big! Pancake -> Binance" + " diff: " + format(buy_diff, ".2f") + "%" + "\n"
+                sendmsg(text)
                 beep()
             print(" ")
-            if sell_diff > 1:
-                print("😱 profit is big! Binance -> Pancake")
+            if sell_diff > -2:
+                text = token["symbol"] + " " + token["contract"] + "\n"
+                text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
+                text += "binance price " + ": " + str(bid) + "\n"
+                print("😱 profit is big! Binance -> Pancake ")
+                text += "pancake S price" + ": " + str(sellPrice) + " Amount: " + str(sellAmount) + "\n"
+                text += "😱 profit is big! Binance -> Pancake"  + " diff: " + format(sell_diff, ".2f") + "%" +  "\n"
+                sendmsg(text)
                 beep()
             print(" ")
             count = count + 1
