@@ -82,7 +82,10 @@ while True:
             sellAmount = sellAmount / 10**token["decimals"]
             sellPrice = 100 / sellAmount
             try:
-                order_book = binance.fetch_order_book(token["symbol"] + "/" + BASE)
+                if token["symbol"] == "PROS":
+                    order_book = binance.fetch_order_book(token["symbol"] + "/" + "BUSD")
+                else:
+                    order_book = binance.fetch_order_book(token["symbol"] + "/" + BASE)
             except Exception as e:
                 print(e)
                 pass
