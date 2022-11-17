@@ -71,10 +71,12 @@ errCount = 0
 
 while True:
     count = 1
-    if errCount > 5:
-        uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
-        errCount = 0
+
     try:
+        if errCount > 5:
+            uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
+            errCount = 0
+        
         for token in tokens:
             print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), count, "/", len(tokens), token["symbol"], token["contract"])
             # buy mode
