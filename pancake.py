@@ -67,8 +67,13 @@ try:
 except Exception as e:
     pass
 
+errCount = 0
+
 while True:
     count = 1
+    if errCount > 5:
+        uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
+        errCount = 0
     try:
         for token in tokens:
             print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), count, "/", len(tokens), token["symbol"], token["contract"])
@@ -126,6 +131,7 @@ while True:
         print("------")
     except Exception as e:
         print(e)
+        errCount = errCount + 1
         time.sleep(120)
         pass
     time.sleep(5)
