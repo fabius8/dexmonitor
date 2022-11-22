@@ -24,6 +24,7 @@ BUSD = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"
 USDT = "0x55d398326f99059fF775485246999027B3197955"
 ETH = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"
 BASE = "USDT"
+MONEY = 500
 
 def beep():
     print("\a")
@@ -79,14 +80,14 @@ while True:
         for token in tokens:
             print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), count, "/", len(tokens), token["symbol"], token["contract"])
             # buy mode
-            buyAmount = uniswap.get_price_input(BUSD, Web3.toChecksumAddress(token["contract"]), 100 * 10**18, None, token["buyRoute"])
+            buyAmount = uniswap.get_price_input(BUSD, Web3.toChecksumAddress(token["contract"]), MONEY * 10**18, None, token["buyRoute"])
             buyAmount = buyAmount / 10**token["decimals"]
-            buyPrice = 100 / buyAmount
+            buyPrice = MONEY / buyAmount
 
             # sell mode
-            sellAmount = uniswap.get_price_output(Web3.toChecksumAddress(token["contract"]), BUSD, 100 * 10**18, None, token["sellRoute"])
+            sellAmount = uniswap.get_price_output(Web3.toChecksumAddress(token["contract"]), BUSD, MONEY * 10**18, None, token["sellRoute"])
             sellAmount = sellAmount / 10**token["decimals"]
-            sellPrice = 100 / sellAmount
+            sellPrice = MONEY / sellAmount
             try:
                 if token["symbol"] == "PROS":
                     order_book = binance.fetch_order_book(token["symbol"] + "/" + "BUSD")
@@ -108,7 +109,7 @@ while True:
             
 
 
-            if buy_diff > 1.2:
+            if buy_diff > 2.2:
                 text = token["symbol"] + " " + token["contract"] + "\n"
                 text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
                 text += "binance price " + ": " + str(bid) + "\n"
@@ -118,7 +119,7 @@ while True:
                 sendmsg(text)
                 beep()
             print(" ")
-            if sell_diff > 1.2:
+            if sell_diff > 2.2:
                 text = token["symbol"] + " " + token["contract"] + "\n"
                 text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
                 text += "binance price " + ": " + str(bid) + "\n"
