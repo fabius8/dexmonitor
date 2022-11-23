@@ -74,9 +74,10 @@ while True:
 
     try:
         if errCount > 5:
+            time.sleep(120)
             uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
             errCount = 0
-        
+
         for token in tokens:
             print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), count, "/", len(tokens), token["symbol"], token["contract"])
             # buy mode
@@ -106,8 +107,6 @@ while True:
             sell_diff = 100 * ((sellPrice - bid)/bid)
             print("B diff", ":",  "%.2f" %buy_diff, "%")
             print("S diff", ":",  "%.2f" %sell_diff, "%")
-            
-
 
             if buy_diff > 2.2:
                 text = token["symbol"] + " " + token["contract"] + "\n"
@@ -134,7 +133,6 @@ while True:
     except Exception as e:
         print(e)
         errCount = errCount + 1
-        time.sleep(120)
         pass
     time.sleep(5)
 
