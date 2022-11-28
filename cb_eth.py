@@ -75,7 +75,8 @@ while True:
             print("error too many, sleep...")
             time.sleep(120)
             uniswap = Uniswap(address=address, private_key=private_key, version=version, provider=provider)
-
+            coinbase = ccxt.coinbase()
+            coinbase.load_markets()
             errCount = 0
 
         for token in tokens:
@@ -89,11 +90,6 @@ while True:
             sellAmount = sellAmount / 10**token["decimals"]
             sellPrice =  eth_price * MONEY / sellAmount
 
-            try:
-                coinbase = ccxt.coinbase()
-                coinbase.load_markets()
-            except Exception as e:
-                pass
             symbol = token["symbol"] + "-USD"
             data = coinbase.publicGetPricesSymbolSpot({"symbol": symbol})
             cbprice = float(data["data"]["amount"])
