@@ -1,6 +1,7 @@
 import ccxt
 import json
 import time
+from copy import deepcopy
 
 binance = ccxt.binance()
 binance.load_markets()
@@ -55,16 +56,17 @@ while True:
                 if item["diff_precent"] > percent:
                     item["buy_price"] = item["price"]
                     item["buy_time"] = item["time"]
-                    catchPair.append(item)
+                    print(item)
+                    catchPair.append(deepcopy(item))
         except Exception as e:
             print(e)
             pass
 
-    for item in data:
-        print(item)
+    #for item in data:
+    #    print(item)
 
     print("catch: ")
     for item in catchPair:
         print(item)
-        print("keep time(s):", item["time"] - item["buy_time"], "profit:", (item["price"] - item["buy_price"])/item["buy_price"], "%")
+        print("keep time(s):", item["time"] - item["buy_time"], "profit:", format(100*(item["price"] - item["buy_price"])/item["buy_price"], ".2f"), "%")
     time.sleep(2)
