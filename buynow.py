@@ -56,7 +56,7 @@ while True:
                     item["direct"] = "📈UP"
                 elif item["price"] < item["previous_price"]:
                     item["direct"] = "📉DOWN"
-
+                #print(item)
                 if item["diff_precent"] > percent:
                     if item not in catchPair:
                         item["buy_price"] = item["price"]
