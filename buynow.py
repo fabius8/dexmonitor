@@ -2,6 +2,8 @@ import ccxt
 import json
 import time
 from copy import deepcopy
+from datetime import datetime, timezone, timedelta
+
 
 binance = ccxt.binance()
 binance.load_markets()
@@ -60,10 +62,10 @@ while True:
                         item["buy_price"] = item["price"]
                         item["buy_time"] = item["time"]
                         catchPair.append(item)
-                if catchPair:
-                    if 100*(item["price"] - item["buy_price"])/item["buy_price"] < loss_percent or (item["time"] - item["buy_time"]) > 60:
-                        money = money * (1 + (item["price"] - item["buy_price"])/item["buy_price"])
-                        catchPair.remove(item)
+                for citem in catchPair:
+                    if 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] < loss_percent or (citem["time"] - citem["buy_time"]) > 60:
+                        money = money * (1 + (citem["price"] - citem["buy_price"])/citem["buy_price"])
+                        catchPair.remove(citem)
 
         except Exception as e:
             print(e)
@@ -72,7 +74,7 @@ while True:
     #for item in data:
     #    print(item)
 
-    print("Money: ", money)
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
     for item in catchPair:
         print(item)
         print("keep time(s):", item["time"] - item["buy_time"], "profit:", format(100*(item["price"] - item["buy_price"])/item["buy_price"], ".2f"), "%")
