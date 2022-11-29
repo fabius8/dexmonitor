@@ -9,7 +9,9 @@ binance.load_markets()
 trig_para = json.load(open('trig_para.json'))
 interval = trig_para["interval"]
 percent = trig_para["percent"]
+loss_percent = trig_para["loss_percent"]
 
+money = 1000000
 data = []
 catchPair = []
 
@@ -54,10 +56,15 @@ while True:
                     item["direct"] = "📉DOWN"
 
                 if item["diff_precent"] > percent:
-                    item["buy_price"] = item["price"]
-                    item["buy_time"] = item["time"]
                     if item not in catchPair:
+                        item["buy_price"] = item["price"]
+                        item["buy_time"] = item["time"]
                         catchPair.append(item)
+                if catchPair:
+                    if 100*(item["price"] - item["buy_price"])/item["buy_price"] < loss_percent or (item["time"] - item["buy_time"]) > 60:
+                        money = money * (1 + (item["price"] - item["buy_price"])/item["buy_price"])
+                        catchPair.remove(item)
+
         except Exception as e:
             print(e)
             pass
@@ -65,7 +72,7 @@ while True:
     #for item in data:
     #    print(item)
 
-    print("catch: ")
+    print("Money: ", money)
     for item in catchPair:
         print(item)
         print("keep time(s):", item["time"] - item["buy_time"], "profit:", format(100*(item["price"] - item["buy_price"])/item["buy_price"], ".2f"), "%")
