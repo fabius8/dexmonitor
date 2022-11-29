@@ -9,7 +9,6 @@ trig_para = json.load(open('trig_para.json'))
 interval = trig_para["interval"]
 percent = trig_para["percent"]
 
-busdPair = []
 data = []
 catchPair = []
 
@@ -22,6 +21,7 @@ for symbol in binance.markets:
             item = {"symbol": symbol, "previous_price": first_price, "previous_time": int(time.time()), "price": None, "time": None, "direct": None, "diff_interval": None, "diff_precent": None}
             data.append(item)
         except Exception as e:
+            #print(e)
             pass
 
 while True:
@@ -32,7 +32,7 @@ while True:
             item["price"] = price
             item["time"] = int(time.time())
             if (item["time"] - item["previous_time"]) > interval:
-                item["diff_interval"] = int(item["time"] - item["previous_time"])
+                item["diff_interval"] = item["time"] - item["previous_time"]
                 item["diff_precent"] = 100 * (item["price"] - item["previous_price"])/item["previous_price"]
                 item["previous_time"] = item["time"]
                 if item["price"] > item["previous_price"]:
@@ -40,8 +40,8 @@ while True:
                 elif item["price"] < item["previous_price"]:
                     item["direct"] = "📉DOWN"
                 item["previous_price"] = item["price"]
-                if item["diff_precent"] > float(percent):
-                    catchPair.append[item]
+                if item["diff_precent"] > percent:
+                    catchPair.append(item)
         except Exception as e:
             print(e)
             pass
@@ -49,5 +49,7 @@ while True:
     for item in data:
         print(item)
 
-    print("catch: ", catchPair)
+    print("catch: ")
+    for item in catchPair:
+        print(item)
     time.sleep(2)
