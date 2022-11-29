@@ -18,7 +18,7 @@ for symbol in binance.markets:
         try:
             order_book = binance.fetch_order_book(symbol)
             first_price = order_book['bids'][0][0]
-            item = {"symbol": symbol, "previous_price": first_price, "previous_time": int(time.time()), "price": None, "time": None, "direct": None, "diff_interval": None, "diff_precent": None}
+            item = {"symbol": symbol, "previous_price": first_price, "previous_time": int(time.time()), "price": first_price, "time": int(time.time()), "direct": None, "diff_interval": None, "diff_precent": None}
             data.append(item)
         except Exception as e:
             #print(e)
@@ -29,17 +29,19 @@ while True:
         try:
             order_book = binance.fetch_order_book(item["symbol"])
             price = order_book['bids'][0][0]
-            item["price"] = price
-            item["time"] = int(time.time())
-            if (item["time"] - item["previous_time"]) > interval:
+            if (int(time.time()) - item["previous_time"]) > interval:
+                item["previous_time"] = item["time"]
+                item["previous_price"] = item["price"]
+                item["time"] = int(time.time())
+                item["price"] = price
                 item["diff_interval"] = item["time"] - item["previous_time"]
                 item["diff_precent"] = 100 * (item["price"] - item["previous_price"])/item["previous_price"]
-                item["previous_time"] = item["time"]
+                
                 if item["price"] > item["previous_price"]:
                     item["direct"] = "📈UP"
                 elif item["price"] < item["previous_price"]:
                     item["direct"] = "📉DOWN"
-                item["previous_price"] = item["price"]
+
                 if item["diff_precent"] > percent:
                     catchPair.append(item)
         except Exception as e:
