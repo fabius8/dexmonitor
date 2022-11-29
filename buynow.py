@@ -33,7 +33,7 @@ while True:
             item["time"] = int(time.time())
             if (item["time"] - item["previous_time"]) > interval:
                 item["diff_interval"] = int(item["time"] - item["previous_time"])
-                item["diff_precent"] = format(100 * (item["price"] - item["previous_price"])/item["previous_price"], ".2f")
+                item["diff_precent"] = 100 * (item["price"] - item["previous_price"])/item["previous_price"]
                 item["previous_time"] = item["time"]
                 if item["price"] > item["previous_price"]:
                     item["direct"] = "📈UP"
