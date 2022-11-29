@@ -56,7 +56,6 @@ while True:
                 if item["diff_precent"] > percent:
                     item["buy_price"] = item["price"]
                     item["buy_time"] = item["time"]
-                    print(item)
                     catchPair.append(deepcopy(item))
         except Exception as e:
             print(e)
