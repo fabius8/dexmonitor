@@ -64,6 +64,7 @@ while True:
                         print("buy")
                         print(item)
                         catchPair.append(item)
+
                 for citem in catchPair:
                     if 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] < loss_percent or (citem["time"] - citem["buy_time"]) > 60:
                         money = money * (1 + (citem["price"] - citem["buy_price"])/citem["buy_price"])
@@ -71,11 +72,10 @@ while True:
                         print(citem)
                         print("keep time(s):", citem["time"] - citem["buy_time"], "profit:", format(100*(citem["price"] - citem["buy_price"])/citem["buy_price"], ".2f"), "%")
                         catchPair.remove(citem)
-
-                print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
+                        print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
 
         except Exception as e:
             print(e)
             pass
-
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
     time.sleep(2)
