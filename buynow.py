@@ -40,8 +40,8 @@ while True:
                 elif item["price"] < item["previous_price"]:
                     item["direct"] = "📉DOWN"
                 item["previous_price"] = item["price"]
-            if item["diff_precent"] > float(percent):
-                catchPair.append[item]
+                if item["diff_precent"] > float(percent):
+                    catchPair.append[item]
         except Exception as e:
             print(e)
             pass
