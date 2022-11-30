@@ -12,6 +12,8 @@ trig_para = json.load(open('trig_para.json'))
 interval = trig_para["interval"]
 percent = trig_para["percent"]
 loss_percent = trig_para["loss_percent"]
+win_percent = trig_para["win_percent"]
+
 
 money = 1000000
 data = []
@@ -73,7 +75,7 @@ while True:
                         catchPair.append(item)
 
                 for citem in catchPair:
-                    if 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] < loss_percent or (citem["time"] - citem["buy_time"]) > 60:
+                    if 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] < loss_percent or 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] > win_percent:
                         money = money * (1 + (citem["price"] - citem["buy_price"])/citem["buy_price"])
                         print("sell")
                         print(citem)
@@ -85,5 +87,5 @@ while True:
             errCount = errCount + 1
             print(e)
             pass
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
+    #print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
     time.sleep(2)

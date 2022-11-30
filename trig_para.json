@@ -1,5 +1,6 @@
 {
     "interval": 60,
     "percent": 1,
-    "loss_percent": -2.0
+    "loss_percent": -2.0,
+    "win_percent": 10
 }
