@@ -73,8 +73,11 @@ while True:
                         print("buy")
                         print(item)
                         catchPair.append(item)
+                    earn = 0
                     for citem in catchPair:
-                        print(citem["symbol"], "earn:", 10000000 * (citem["price"] - citem["buy_price"])/citem["buy_price"])
+                        print(citem["symbol"], "earn:", 1000000 * (citem["price"] - citem["buy_price"])/citem["buy_price"])
+                        earn = earn + 1000000 * (citem["price"] - citem["buy_price"])/citem["buy_price"]
+                    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money + earn)
 
                 for citem in catchPair:
                     if 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] < loss_percent or 100*(citem["price"] - citem["buy_price"])/citem["buy_price"] > win_percent:
