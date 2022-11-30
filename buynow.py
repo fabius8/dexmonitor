@@ -17,6 +17,8 @@ money = 1000000
 data = []
 catchPair = []
 
+errCount = 0
+
 print("init...")
 for symbol in binance.markets:
     if "/BUSD" in symbol:
@@ -42,6 +44,11 @@ for symbol in binance.markets:
 while True:
     for item in data:
         try:
+            if errCount > 5:
+                time.sleep(120)
+                binance = ccxt.binance()
+                binance.load_markets()
+                errCount = 0
             order_book = binance.fetch_order_book(item["symbol"])
             price = order_book['bids'][0][0]
             if (int(time.time()) - item["previous_time"]) > interval:
@@ -75,6 +82,7 @@ while True:
                         print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
 
         except Exception as e:
+            errCount = errCount + 1
             print(e)
             pass
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Money: ", money)
