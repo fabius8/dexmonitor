@@ -8,7 +8,7 @@ binance = ccxt.binance(secret["binance"])
 binance.load_markets()
 
 symbol = "BUSD/USDT"
-
+per_amount = 20000
 
 while True:
     order_book = binance.fetch_order_book(symbol)
@@ -18,12 +18,18 @@ while True:
     for asset in balance["info"]["balances"]:
         #sell busd
         if asset['asset'] == "BUSD" and float(asset['free']) > 10.0:
-            sell = binance.createLimitSellOrder(symbol, int(float(asset['free'])), ask)
+            if float(asset['free']) > per_amount:
+                sell = binance.createLimitSellOrder(symbol, per_amount, ask)
+            else:
+                sell = binance.createLimitSellOrder(symbol, int(float(asset['free'])), ask)
             print(sell)
         #buy busd
         if asset['asset'] == "USDT" and float(asset['free']) > 10.0:
-            buy = binance.createLimitBuyOrder(symbol, int(float(asset['free'])), bid)
+            if float(asset['free']) > per_amount:
+                buy = binance.createLimitBuyOrder(symbol, per_amount, bid)
+            else:
+                buy = binance.createLimitBuyOrder(symbol, int(float(asset['free'])), bid)
             print(buy)
-    time.sleep(60)
+    time.sleep(10)
 
 
