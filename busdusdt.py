@@ -11,6 +11,7 @@ symbol = "BUSD/USDT"
 per_amount = 20000
 errCount = 0
 
+
 while True:
     try:
         if errCount > 5:
@@ -18,11 +19,17 @@ while True:
             binance.load_markets()
             time.sleep(120)
             errCount = 0
-
+            
+        totalU = 0
         order_book = binance.fetch_order_book(symbol)
         bid = order_book['bids'][0][0]
         ask = order_book['asks'][0][0]
         balance = binance.fetchBalance()
+    
+        for asset in balance["info"]["balances"]:
+            if asset['asset'] == "BUSD" or asset['asset'] == "USDT":
+                totalU = totalU + float(asset["free"]) + float(asset["locked"])
+
         for asset in balance["info"]["balances"]:
             #sell busd
             if asset['asset'] == "BUSD" and float(asset['free']) > 10.0:
@@ -31,6 +38,8 @@ while True:
                 else:
                     sell = binance.createLimitSellOrder(symbol, int(float(asset['free'])), ask)
                 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), sell["info"])
+                print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Total USD:", totalU)
+                
             #buy busd
             if asset['asset'] == "USDT" and float(asset['free']) > 10.0:
                 if float(asset['free']) > per_amount:
@@ -38,6 +47,7 @@ while True:
                 else:
                     buy = binance.createLimitBuyOrder(symbol, int(float(asset['free'])), bid)
                 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), buy["info"])
+                print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Total USD:", totalU)
             
         openOrders = binance.fetchOpenOrders(symbol=symbol)
         #cancel outdate orders
