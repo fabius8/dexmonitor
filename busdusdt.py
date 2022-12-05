@@ -19,7 +19,7 @@ while True:
             binance.load_markets()
             time.sleep(120)
             errCount = 0
-            
+
         totalU = 0
         order_book = binance.fetch_order_book(symbol)
         bid = order_book['bids'][0][0]
@@ -27,8 +27,10 @@ while True:
         balance = binance.fetchBalance()
     
         for asset in balance["info"]["balances"]:
-            if asset['asset'] == "BUSD" or asset['asset'] == "USDT":
+            if asset['asset'] == "USDT":
                 totalU = totalU + float(asset["free"]) + float(asset["locked"])
+            elif asset['asset'] == "BUSD":
+                totalU = totalU + (float(asset["free"]) + float(asset["locked"])) * bid
 
         for asset in balance["info"]["balances"]:
             #sell busd
@@ -62,6 +64,6 @@ while True:
         print(e)
         errCount = errCount + 1
         pass
-    time.sleep(10)
+    time.sleep(5)
 
 
