@@ -1,4 +1,3 @@
-import ccxt
 import ccxt.pro
 import json
 from asyncio import run, gather
@@ -23,16 +22,18 @@ for row in data["rows"]:
 """
 
 async def watch_loop(spot, future, symbol, n):
+    if n > 50:
+        return
     #  timestamp, open, high, low, close, volume        
     timeframe = '1m'
-    limit = 2
-    diff = 0.001*100
+    limit = 1
+    diff = 0.00001*100
     while True:
         try:
-            await time.sleep(5)
-            print("here")
-            ohlcvs_future = await future.watch_ohlcv(symbol, timeframe, None, limit)
-            ohlcvs_spot = await spot.watch_ohlcv(symbol, timeframe, None, limit)
+            #time.sleep(10)
+            ohlcvs_future = future.fetch_ohlcv(symbol, timeframe, None, limit)
+            ohlcvs_spot = spot.fetch_ohlcv(symbol.replace("1000", ""), timeframe, None, limit)
+            
             open_future = ohlcvs_future[0][1]
             high_future = ohlcvs_future[0][2]
             low_future  = ohlcvs_future[0][3]
@@ -42,12 +43,13 @@ async def watch_loop(spot, future, symbol, n):
             high_spot = ohlcvs_spot[0][2]
             low_spot  = ohlcvs_spot[0][3]
             close_spot = ohlcvs_spot[0][4]
-            cur_diff = int((close_spot - close_future)/close_future*100)
+            print(ohlcvs_future, ohlcvs_spot)
+            cur_diff = 100*(close_spot - close_future)/close_future
             
 
             if (cur_diff > diff):
-                print('{0:>16}'.format(symbol), '{0:>8.2%}'.format(cur_diff/100), "::", ohlcvs_spot.iso8601(open_spot[0][0]), "price:", close_spot)
-                print('{0:>16}'.format(symbol), '{0:>8.2%}'.format(cur_diff/100), "::", ohlcvs_future.iso8601(open_future[0][0]), "price:", close_future)
+                print('{0:>16}'.format(symbol), '{0:>8.2%}'.format(cur_diff/100), "::", ohlcvs_spot[0][0], "price:", close_spot)
+                print('{0:>16}'.format(symbol), '{0:>8.2%}'.format(cur_diff/100), "::", ohlcvs_future[0][0], "price:", close_future)
                 #loan = binance.sapi_post_margin_loan({"asset":symbol[:-5], "amount":0.001})
                 print("loan create")
                 break
@@ -83,7 +85,13 @@ async def main():
         for i in pair_usdt:
             i = i + '/USDT'
             pair_all.append(i)
+        pair_fix = pair_all
+        for i in pair_all:
+            if i not in markets_spot or i.replace("1000", "") not in markets_spot:
+                pair_fix.remove(i)
+        pair_all = pair_fix
         print(pair_all, len(pair_all))
+        #pair_all = ["1000SHIB/USDT"]
         await gather(*[watch_loop(binance_spot, binance_future, symbol, n) for n, symbol in enumerate(pair_all)])
         await binance_spot.close()
         await binance_future.close()

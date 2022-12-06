@@ -70,6 +70,7 @@ async def fetch_ohlcv(exchange, symbol, delay, n):
             #print(data)
         except Exception as e:
             #print(type(e).__name__, str(e), symbol)
+            await exchange.sleep(10000)
             continue
 
 async def main():

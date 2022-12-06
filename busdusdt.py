@@ -34,7 +34,7 @@ while True:
 
         for asset in balance["info"]["balances"]:
             #sell busd
-            if asset['asset'] == "BUSD" and float(asset['free']) > 10.0:
+            if asset['asset'] == "BUSD" and float(asset['free']) > 1000.0:
                 if float(asset['free']) > per_amount:
                     sell = binance.createLimitSellOrder(symbol, per_amount, ask)
                 else:
@@ -43,7 +43,7 @@ while True:
                 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Total USD:", totalU)
                 
             #buy busd
-            if asset['asset'] == "USDT" and float(asset['free']) > 10.0:
+            if asset['asset'] == "USDT" and float(asset['free']) > 1000.0:
                 if float(asset['free']) > per_amount:
                     buy = binance.createLimitBuyOrder(symbol, per_amount, bid)
                 else:
