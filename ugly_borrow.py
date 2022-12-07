@@ -68,7 +68,7 @@ while True:
             cur_diff = 100 * (close_future - close_spot)/close_spot
             
             if(abs(funding_rate) > 0.01):
-                print(binance_spot.iso8601(ohlcvs_spot[0][0]), "::", '{0:>5}'.format(str(count)),'{0:>16}'.format(symbol), \
+                print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), '{0:>5}'.format(str(count)),'{0:>16}'.format(symbol), \
                     '{0:>8.2%}'.format(cur_diff/100), '{0:>19}'.format(str(funding_rate)), \
                     '{0:<16}'.format("sp: " + str(close_spot)), "fp:", close_future)
 
