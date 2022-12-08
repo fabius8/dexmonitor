@@ -17,7 +17,7 @@ frate = 0
 # 合约张数， 1张=10FITFI
 amount = 223
 
-print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "check time OK?")
 
 while True:
     try:
@@ -37,13 +37,13 @@ while True:
                 (hour == 16 and minute == 0 and (second >= 6 and second <= 8)):
                 # 负资费买入
                 if float(frate) < 0:
-                    open = exchange.private_post_trade_order({"instId":symbol, "tdMode": "cross", "side": "buy", "posSide":"long", "ordType":"market", "sz": amount})
                     buying = True
+                    open = exchange.private_post_trade_order({"instId":symbol, "tdMode": "cross", "side": "buy", "posSide":"long", "ordType":"market", "sz": amount})
                     print("buying:", open)
                 # 正资费卖出
                 if float(frate) > 0:
-                    open = exchange.private_post_trade_order({"instId":symbol, "tdMode": "cross", "side": "sell", "posSide":"short", "ordType":"market", "sz": amount})
                     selling = True
+                    open = exchange.private_post_trade_order({"instId":symbol, "tdMode": "cross", "side": "sell", "posSide":"short", "ordType":"market", "sz": amount})
                     print("selling:", open)
                 opening = True
         if opening:
