@@ -17,6 +17,8 @@ frate = 0
 # 合约张数， 1张=10FITFI
 amount = 223
 
+print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 while True:
     try:
         now = datetime.now()
