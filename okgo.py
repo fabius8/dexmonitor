@@ -19,6 +19,12 @@ amount = 223
 
 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "check time OK?")
 
+# 测试买卖
+open = exchange.private_post_trade_order({"instId":symbol, "tdMode": "cross", "side": "buy", "posSide":"long", "ordType":"market", "sz": 1})
+print(open)
+close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
+print(close)
+
 while True:
     try:
         now = datetime.now()
