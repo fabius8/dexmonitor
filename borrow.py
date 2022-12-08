@@ -31,7 +31,7 @@ async def watch_loop(spot, future, symbol, n):
     while True:
         try:
             #time.sleep(10)
-            ohlcvs_future = future.fetch_ohlcv(symbol, timeframe, None, limit)
+            ohlcvs_future = await future.fetch_ohlcv(symbol, timeframe, None, limit)
             ohlcvs_spot = spot.fetch_ohlcv(symbol.replace("1000", ""), timeframe, None, limit)
             
             open_future = ohlcvs_future[0][1]

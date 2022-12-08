@@ -3,6 +3,7 @@ import time
 import json
 from datetime import datetime
 from decimal import Decimal
+import random
 
 secret = json.load(open('secret.json'))
 
@@ -32,15 +33,17 @@ while True:
         minute = now.minute
         second = now.second
         # 提前获取资费
-        if (second > 30 and second < 50 and second % 2 == 0):
+        if (second > 30 and second < 50 and second % 5 == 0):
             frate = exchange.fetch_funding_rate(symbol)
             frate = frate["info"]["fundingRate"]
-        #print(frate)
+            #print(frate)
 
         if (not opening and abs(float(frate)) > 0.01):
             if (hour == 0 and minute == 0 and (second >= 6 and second <= 8)) or \
                 (hour == 8 and minute == 0 and (second >= 6 and second <= 8)) or \
                 (hour == 16 and minute == 0 and (second >= 6 and second <= 8)):
+                # 等 0.x 秒，随机值
+                time.sleep(random.random())
                 # 负资费买入
                 if float(frate) < 0:
                     buying = True
@@ -66,7 +69,7 @@ while True:
                     selling = False
                 opening = False
                 
-        time.sleep(0.5)
+        time.sleep(0.6)
     except Exception as e:
         print(type(e).__name__, str(e))
         break
