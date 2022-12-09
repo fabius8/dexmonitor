@@ -16,7 +16,7 @@ buying = False
 selling = False
 frate = 0
 # 合约张数， 1张=10FITFI
-amount = 223
+amount = 446
 
 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "check time OK?")
 
@@ -38,10 +38,10 @@ while True:
             frate = frate["info"]["fundingRate"]
             #print(frate)
 
-        if (not opening and abs(float(frate)) > 0.005):
-            if (hour == 0 and minute == 0 and (second >= 7 and second <= 8)) or \
-                (hour == 8 and minute == 0 and (second >= 7 and second <= 8)) or \
-                (hour == 16 and minute == 0 and (second >= 7 and second <= 8)):
+        if (not opening and abs(float(frate)) > 0.003):
+            if (hour == 0 and minute == 0 and (second >= 7 and second <= 9)) or \
+                (hour == 8 and minute == 0 and (second >= 7 and second <= 9)) or \
+                (hour == 16 and minute == 0 and (second >= 7 and second <= 9)):
                 # 等 0.x 秒，随机值
                 time.sleep(random.random())
                 # 负资费买入
@@ -56,9 +56,9 @@ while True:
                     print("selling:", open)
                 opening = True
         if opening:
-            if (hour == 0 and minute == 0 and (second >= 13 and second <= 20)) or \
-                (hour == 8 and minute == 0 and (second >= 13 and second <= 20)) or \
-                (hour == 16 and minute == 0 and (second >= 13 and second <= 20)):
+            if (hour == 0 and minute == 0 and (second >= 12 and second <= 15)) or \
+                (hour == 8 and minute == 0 and (second >= 12 and second <= 15)) or \
+                (hour == 16 and minute == 0 and (second >= 12 and second <= 15)):
                 if buying:
                     buying = False
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
