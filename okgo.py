@@ -38,10 +38,10 @@ while True:
             frate = frate["info"]["fundingRate"]
             #print(frate)
 
-        if (not opening and abs(float(frate)) > 0.01):
-            if (hour == 0 and minute == 0 and (second >= 6 and second <= 8)) or \
-                (hour == 8 and minute == 0 and (second >= 6 and second <= 8)) or \
-                (hour == 16 and minute == 0 and (second >= 6 and second <= 8)):
+        if (not opening and abs(float(frate)) > 0.005):
+            if (hour == 0 and minute == 0 and (second >= 7 and second <= 8)) or \
+                (hour == 8 and minute == 0 and (second >= 7 and second <= 8)) or \
+                (hour == 16 and minute == 0 and (second >= 7 and second <= 8)):
                 # 等 0.x 秒，随机值
                 time.sleep(random.random())
                 # 负资费买入
@@ -56,20 +56,20 @@ while True:
                     print("selling:", open)
                 opening = True
         if opening:
-            if (hour == 0 and minute == 0 and (second >= 17 and second <= 20)) or \
-                (hour == 8 and minute == 0 and (second >= 17 and second <= 20)) or \
-                (hour == 16 and minute == 0 and (second >= 17 and second <= 20)):
+            if (hour == 0 and minute == 0 and (second >= 13 and second <= 20)) or \
+                (hour == 8 and minute == 0 and (second >= 13 and second <= 20)) or \
+                (hour == 16 and minute == 0 and (second >= 13 and second <= 20)):
                 if buying:
+                    buying = False
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
                     print(close, "closed")
-                    buying = False
                 if selling:
+                    selling = False
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "short"})
                     print(close, "closed")
-                    selling = False
                 opening = False
                 
         time.sleep(0.6)
     except Exception as e:
         print(type(e).__name__, str(e))
-        break
+        pass
