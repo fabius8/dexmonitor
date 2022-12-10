@@ -4,19 +4,35 @@ import json
 from datetime import datetime
 from decimal import Decimal
 import random
+import requests
 
 secret = json.load(open('secret.json'))
-
 exchange = ccxt.okx(secret["okx"])
 exchange.load_markets()
-symbol = "FITFI-USDT-SWAP"
+
+# 可修改区域
+symbol = "DORA-USDT-SWAP"
+usdt_amount = 500
+
+#币转张
+def convert_sz(symbol, sz):
+    url = "https://www.okx.com/api/v5/public/convert-contract-coin"
+    order = exchange.fetch_order_book(symbol)
+    px = order["bids"][0][0]
+    print(symbol, "price:", px)
+    unit = "usds"
+    res = requests.get(url + "?" + "instId=" + symbol + "&" + "sz=" + str(sz) + "&" + "px=" + str(px) + "&" + "unit=" + str(unit))
+    return res
+
+# 合约张数
+amount = convert_sz(symbol, usdt_amount).json()["data"][0]["sz"]
+print("trade contract amount:", amount)
 
 opening = False
 buying = False
 selling = False
 frate = 0
-# 合约张数， 1张=10FITFI
-amount = 446
+
 
 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "check time OK?")
 
