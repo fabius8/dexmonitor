@@ -35,7 +35,7 @@ selling = False
 frate = 0
 
 
-print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "check time OK?")
+print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "starting...")
 
 # 测试买卖
 #open = exchange.private_post_trade_order({"instId":symbol, "tdMode": "cross", "side": "buy", "posSide":"long", "ordType":"market", "sz": 1})
