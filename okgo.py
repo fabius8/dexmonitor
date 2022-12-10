@@ -13,8 +13,9 @@ exchange.load_markets()
 # 可修改区域
 symbol = "DORA-USDT-SWAP"
 usdt_amount = 500
+fundingRate = 0.003
 
-#币转张
+# 币转张
 def convert_sz(symbol, sz):
     url = "https://www.okx.com/api/v5/public/convert-contract-coin"
     order = exchange.fetch_order_book(symbol)
@@ -54,7 +55,7 @@ while True:
             frate = frate["info"]["fundingRate"]
             #print(frate)
 
-        if (not opening and abs(float(frate)) > 0.003):
+        if (not opening and abs(float(frate)) > fundingRate):
             if (hour == 0 and minute == 0 and (second >= 7 and second <= 9)) or \
                 (hour == 8 and minute == 0 and (second >= 7 and second <= 9)) or \
                 (hour == 16 and minute == 0 and (second >= 7 and second <= 9)):
