@@ -11,7 +11,7 @@ exchange = ccxt.okx(secret["okx"])
 exchange.load_markets()
 
 # 可修改区域
-symbol = "DORA-USDT-SWAP"
+symbol = "CELO-USDT-SWAP"
 usdt_amount = 500
 fundingRate = 0.003
 
@@ -56,9 +56,9 @@ while True:
             #print(frate)
 
         if (not opening and abs(float(frate)) > fundingRate):
-            if (hour == 0 and minute == 0 and (second >= 7 and second <= 9)) or \
-                (hour == 8 and minute == 0 and (second >= 7 and second <= 9)) or \
-                (hour == 16 and minute == 0 and (second >= 7 and second <= 9)):
+            if (hour == 0 and minute == 0 and (second >= 6 and second <= 9)) or \
+                (hour == 8 and minute == 0 and (second >= 6 and second <= 9)) or \
+                (hour == 16 and minute == 0 and (second >= 6 and second <= 9)):
                 # 等 0.x 秒，随机值
                 time.sleep(random.random())
                 # 负资费买入
@@ -73,9 +73,9 @@ while True:
                     print("selling:", open)
                 opening = True
         if opening:
-            if (hour == 0 and minute == 0 and (second >= 12 and second <= 15)) or \
-                (hour == 8 and minute == 0 and (second >= 12 and second <= 15)) or \
-                (hour == 16 and minute == 0 and (second >= 12 and second <= 15)):
+            if (hour == 0 and minute == 0 and (second >= 15 and second <= 17)) or \
+                (hour == 8 and minute == 0 and (second >= 15 and second <= 17)) or \
+                (hour == 16 and minute == 0 and (second >= 15 and second <= 17)):
                 if buying:
                     buying = False
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
