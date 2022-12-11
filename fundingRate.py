@@ -103,7 +103,7 @@ def job(FR_trigger, alertType):
         
         if "email" in alertType:
             print(text)
-            send_email(text)
+            #send_email(text)
 
         # 微信通知
         text = ""
@@ -117,7 +117,7 @@ def job(FR_trigger, alertType):
             text += "时间: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n" + "\n"
         if "weixin" in alertType:
             print(text)
-            sendmsg(text)
+            #sendmsg(text)
     except Exception as e:
         print(e)
         pass

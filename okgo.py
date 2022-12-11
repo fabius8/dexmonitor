@@ -1,6 +1,7 @@
 import ccxt
 import time
 import json
+import sys
 from datetime import datetime
 from decimal import Decimal
 import random
@@ -14,6 +15,25 @@ exchange.load_markets()
 symbol = "CELO-USDT-SWAP"
 usdt_amount = 500
 fundingRate = 0.003
+open_second = 5
+close_second = 20
+
+if len(sys.argv) != 6:
+    print("输入参数不对, python okgo.py <币对(BTC)-> <交易USD数量(如500)> <开始秒(如5)> <结束秒(如5)> <资费(如0.003)>")
+    print("例子: python okgo.py BTC 500 5 15 0.003")
+    sys.exit()
+else:
+    symbol = sys.argv[1] + "-USDT-SWAP"
+    usdt_amount = sys.argv[2]
+    open_second = int(sys.argv[3])
+    close_second = int(sys.argv[4])
+    fundingRate = float(sys.argv[5])
+
+print("币种: ", symbol)
+print("交易数量: ", usdt_amount, "U")
+print("开始: ", open_second, "秒")
+print("结束: ", close_second, "秒")
+print("资费: ", fundingRate, "")
 
 # 币转张
 def convert_sz(symbol, sz):
@@ -27,7 +47,7 @@ def convert_sz(symbol, sz):
 
 # 合约张数
 amount = convert_sz(symbol, usdt_amount).json()["data"][0]["sz"]
-print("trade contract amount:", amount)
+print("合约张数: ", amount)
 
 opening = False
 buying = False
@@ -56,9 +76,9 @@ while True:
             #print(frate)
 
         if (not opening and abs(float(frate)) > fundingRate):
-            if (hour == 0 and minute == 0 and (second >= 5 and second <= 9)) or \
-                (hour == 8 and minute == 0 and (second >= 5 and second <= 9)) or \
-                (hour == 16 and minute == 0 and (second >= 5 and second <= 9)):
+            if (hour == 0 and minute == 0 and (second >= open_second and second <= 20)) or \
+                (hour == 8 and minute == 0 and (second >= open_second and second <= 20)) or \
+                (hour == 16 and minute == 0 and (second >= open_second and second <= 20)):
                 # 等 0.x 秒，随机值
                 time.sleep(random.random())
                 # 负资费买入
@@ -73,9 +93,9 @@ while True:
                     print("selling:", open)
                 opening = True
         if opening:
-            if (hour == 0 and minute == 0 and (second >= 19 and second <= 20)) or \
-                (hour == 8 and minute == 0 and (second >= 19 and second <= 20)) or \
-                (hour == 16 and minute == 0 and (second >= 19 and second <= 20)):
+            if (hour == 0 and minute == 0 and (second >= close_second and second <= 20)) or \
+                (hour == 8 and minute == 0 and (second >= close_second and second <= 20)) or \
+                (hour == 16 and minute == 0 and (second >= close_second and second <= 20)):
                 if buying:
                     buying = False
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
