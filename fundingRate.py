@@ -88,6 +88,9 @@ def job(FR_trigger, alertType):
             #print("------")
 
         alert.sort(key=lambda x: x["r"], reverse=True)
+        alert = list(filter(lambda x: x["e"] in ["Binance", "OKX"], alert))
+        if len(alert) == 0:
+            return
 
         # EMAIL 通知
         text = ""
