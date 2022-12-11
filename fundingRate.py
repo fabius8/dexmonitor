@@ -12,6 +12,28 @@ receivers = secret["email"]["receivers"]
 username = secret["email"]["username"]
 password = secret["email"]["password"]
 
+def sendmsg(text):
+    params = {
+        "corpid": secret["weixin"]['corpid'],
+        "corpsecret": secret["weixin"]['corpsecret']
+    }
+    url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
+    r = requests.get(url, params = params)
+    access_token = r.json()["access_token"]
+    url = "https://qyapi.weixin.qq.com/cgi-bin/message/send"
+    params = {
+        "access_token": access_token
+    }
+    data = {
+        "touser": "@all",
+        "msgtype" : "text",
+        "agentid" : secret["weixin"]['agentid'],
+        "text" : {
+            "content" : text
+        }
+    }
+    r = requests.post(url, params = params, json = data)
+
 def send_email(text):
     print("send_email")
     message = MIMEText(text, 'plain', 'utf-8')
@@ -29,8 +51,7 @@ def send_email(text):
         print("Send Mail Fail", e)
 
 
-def job():
-    FR_trigger = 0.1
+def job(FR_trigger, alertType):
     coinglassSecret = secret["coinglassSecret"]
     try:
         url = "https://open-api.coinglass.com/public/v2/funding"
@@ -68,22 +89,40 @@ def job():
 
         alert.sort(key=lambda x: x["r"], reverse=True)
 
+        # EMAIL 通知
         text = ""
-        print(alert)
         text += str(len(alert)) + " coins FR above " + str(FR_trigger) + "\n" + "\n"
         for i in alert:
             text += format(i["r"], "+.2f") + " " + ((format(i["n"], "+.2f")) if i["n"] else "     ") + " " + '{0:<7}'.format(i["s"]) + '{0:<8}'.format(i["e"] ) + " " + i["u"] + "\n"
             #print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), text)
             #print(format(i["r"], "+.2f") + "%" + " " + '{0:<7}'.format((format(i["n"], "+.2f") if i["n"] else "") + "%") + '{0:<7}'.format(i["e"] ) + " " + '{0:<6}'.format(i["s"]) + " " + '{0:<4}'.format(i["u"]))
         text +=  "\n" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
-        print(text)
-        send_email(text)
+        
+        if "email" in alertType:
+            print(text)
+            send_email(text)
+
+        # 微信通知
+        text = ""
+        text += str(len(alert)) + " 个币合约资费超过 " + str(FR_trigger) + "\n"
+        for i in alert:
+            text += "品种: " + i["s"] + "\n"
+            text += "饺易所: " + i["e"] + "\n"
+            text += "当前资费: " + format(i["r"], "+.2f") + "\n"
+            text += "下期资费: " + (format(i["n"], "+.2f") if i["n"] else "无") + "\n"
+            text += "类型: " + i["u"] + "\n"
+            text += "时间: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n" + "\n"
+        if "weixin" in alertType:
+            print(text)
+            sendmsg(text)
     except Exception as e:
         print(e)
         pass
 
-job()
-schedule.every().hour.do(job)
+job(0.5, "weixin")
+job(0.1, "email")
+schedule.every().hour.do(lambda: job(0.1, "email"))
+schedule.every().hour.do(lambda: job(0.5, "weixin"))
 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "starting")
 while True:
     schedule.run_pending()
