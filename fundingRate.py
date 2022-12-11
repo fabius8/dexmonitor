@@ -67,15 +67,16 @@ def job():
         alert.sort(key=lambda x: x["r"], reverse=True)
 
         text = ""
-        text += datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+        text += datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n" + "\n"
         for i in alert:
-            text += format(i["r"], "+.2f") + "," + ((format(i["n"], "+.2f")) if i["n"] else "     ") + "," + i["s"] + "," + i["e"] + "," + i["u"] + "\n"
+            text += format(i["r"], "+.2f") + " " + ((format(i["n"], "+.2f")) if i["n"] else "     ") + " " + '{0:<7}'.format(i["s"]) + '{0:<8}'.format(i["e"] ) + " " + i["u"] + "\n"
             #print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), text)
             #print(format(i["r"], "+.2f") + "%" + " " + '{0:<7}'.format((format(i["n"], "+.2f") if i["n"] else "") + "%") + '{0:<7}'.format(i["e"] ) + " " + '{0:<6}'.format(i["s"]) + " " + '{0:<4}'.format(i["u"]))
+        print(text)
         send_email(text)
     except Exception as e:
         pass
-#job()
+job()
 schedule.every().hour.do(job)
 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "starting")
 while True:
