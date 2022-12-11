@@ -27,6 +27,9 @@ else:
     usdt_amount = sys.argv[2]
     open_second = int(sys.argv[3])
     close_second = int(sys.argv[4])
+    if close_second < 10:
+        print("close can't < 10")
+        sys.exit()
     fundingRate = float(sys.argv[5])
 
 print("币种: ", symbol)
@@ -76,11 +79,11 @@ while True:
             #print(frate)
 
         if (not opening and abs(float(frate)) > fundingRate):
-            if (hour == 0 and minute == 0 and (second >= open_second and second <= 20)) or \
-                (hour == 8 and minute == 0 and (second >= open_second and second <= 20)) or \
-                (hour == 16 and minute == 0 and (second >= open_second and second <= 20)):
+            if (hour == 0 and minute == 0 and (second >= open_second and second <= 10)) or \
+                (hour == 8 and minute == 0 and (second >= open_second and second <= 10)) or \
+                (hour == 16 and minute == 0 and (second >= open_second and second <= 10)):
                 # 等 0.x 秒，随机值
-                time.sleep(random.random())
+                #time.sleep(random.random())
                 # 负资费买入
                 if float(frate) < 0:
                     buying = True
