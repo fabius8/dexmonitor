@@ -45,7 +45,7 @@ def job():
             #print("USDT-SWAP:")
             for j in i["uMarginList"]:
                 if j["status"] == 0:
-                    break
+                    continue
                 if j["status"] == 1:
                     if abs(j["rate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USDT", "e": j["exchangeName"], "r": j["rate"], "n": None})
@@ -55,7 +55,7 @@ def job():
             #print("\nCOIN-SWAP:")
             for k in i["cMarginList"]:
                 if k["status"] == 0:
-                    break
+                    continue
                 if k["status"] == 1:
                     if abs(k["rate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USD", "e": k["exchangeName"], "r": k["rate"], "n": None})
