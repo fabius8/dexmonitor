@@ -56,9 +56,9 @@ while True:
             #print(frate)
 
         if (not opening and abs(float(frate)) > fundingRate):
-            if (hour == 0 and minute == 0 and (second >= 6 and second <= 9)) or \
-                (hour == 8 and minute == 0 and (second >= 6 and second <= 9)) or \
-                (hour == 16 and minute == 0 and (second >= 6 and second <= 9)):
+            if (hour == 0 and minute == 0 and (second >= 5 and second <= 9)) or \
+                (hour == 8 and minute == 0 and (second >= 5 and second <= 9)) or \
+                (hour == 16 and minute == 0 and (second >= 5 and second <= 9)):
                 # 等 0.x 秒，随机值
                 time.sleep(random.random())
                 # 负资费买入
@@ -73,9 +73,9 @@ while True:
                     print("selling:", open)
                 opening = True
         if opening:
-            if (hour == 0 and minute == 0 and (second >= 15 and second <= 17)) or \
-                (hour == 8 and minute == 0 and (second >= 15 and second <= 17)) or \
-                (hour == 16 and minute == 0 and (second >= 15 and second <= 17)):
+            if (hour == 0 and minute == 0 and (second >= 19 and second <= 20)) or \
+                (hour == 8 and minute == 0 and (second >= 19 and second <= 20)) or \
+                (hour == 16 and minute == 0 and (second >= 19 and second <= 20)):
                 if buying:
                     buying = False
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
