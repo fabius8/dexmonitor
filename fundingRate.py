@@ -73,7 +73,7 @@ def job(FR_trigger, alertType):
                     if abs(j["rate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USDT", "e": j["exchangeName"], "r": j["rate"], "n": None})
                 if j["status"] == 2:
-                    if abs(j["rate"]) > FR_trigger:
+                    if abs(j["rate"]) > FR_trigger or abs(j["predictedRate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USDT", "e": j["exchangeName"], "r": j["rate"], "n": j["predictedRate"]})
             #print("\nCOIN-SWAP:")
             for k in i["cMarginList"]:
@@ -83,7 +83,7 @@ def job(FR_trigger, alertType):
                     if abs(k["rate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USD", "e": k["exchangeName"], "r": k["rate"], "n": None})
                 if k["status"] == 2:
-                    if abs(k["rate"]) > FR_trigger:
+                    if abs(k["rate"]) > FR_trigger or abs(k["predictedRate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USD", "e": k["exchangeName"], "r": k["rate"], "n": k["predictedRate"]})
             #print("------")
 
