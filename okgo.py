@@ -108,6 +108,8 @@ while True:
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "short"})
                     print(close, "closed")
                 opening = False
+                print("close trading. exit!")
+                break
                 
         time.sleep(0.6)
     except Exception as e:
