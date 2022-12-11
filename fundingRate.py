@@ -28,15 +28,17 @@ def send_email(text):
     except Exception as e:
         print("Send Mail Fail", e)
 
-coinglassSecret = secret["coinglassSecret"]
+
 def job():
+    FR_trigger = 0.1
+    coinglassSecret = secret["coinglassSecret"]
     try:
         url = "https://open-api.coinglass.com/public/v2/funding"
         headers = {
             "accept": "application/json",
             "coinglassSecret": coinglassSecret
         }
-        FR_trigger = 0.1
+        
         alert = []
         response = requests.get(url, headers=headers)
 
@@ -67,15 +69,19 @@ def job():
         alert.sort(key=lambda x: x["r"], reverse=True)
 
         text = ""
-        text += datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n" + "\n"
+        print(alert)
+        text += str(len(alert)) + " coins FR above " + str(FR_trigger) + "\n" + "\n"
         for i in alert:
             text += format(i["r"], "+.2f") + " " + ((format(i["n"], "+.2f")) if i["n"] else "     ") + " " + '{0:<7}'.format(i["s"]) + '{0:<8}'.format(i["e"] ) + " " + i["u"] + "\n"
             #print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), text)
             #print(format(i["r"], "+.2f") + "%" + " " + '{0:<7}'.format((format(i["n"], "+.2f") if i["n"] else "") + "%") + '{0:<7}'.format(i["e"] ) + " " + '{0:<6}'.format(i["s"]) + " " + '{0:<4}'.format(i["u"]))
+        text +=  "\n" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
         print(text)
         send_email(text)
     except Exception as e:
+        print(e)
         pass
+
 job()
 schedule.every().hour.do(job)
 print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "starting")
