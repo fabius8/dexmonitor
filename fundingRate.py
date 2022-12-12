@@ -86,6 +86,14 @@ def job(FR_trigger, alertType):
                     if abs(k["rate"]) > FR_trigger or abs(k["predictedRate"]) > FR_trigger:
                         alert.append({"s": i["symbol"], "u": "USD", "e": k["exchangeName"], "r": k["rate"], "n": k["predictedRate"]})
             #print("------")
+        # 币安 BUSD 合约交易对
+        url = "https://fapi.binance.com/fapi/v1/premiumIndex"
+        res = requests.get(url)
+        for i in res.json():
+            rate = float(i["lastFundingRate"]) * 100
+            if "BUSD" in i["symbol"][-4:] and abs(rate) > FR_trigger:
+                #print(i["symbol"])
+                alert.append({"s": i["symbol"][0:-4], "u": "BUSD", "e": "Binance", "r": rate, "n": None})
 
         alert.sort(key=lambda x: x["r"], reverse=True)
         alert = list(filter(lambda x: x["e"] in ["Binance", "OKX"], alert))
@@ -103,7 +111,7 @@ def job(FR_trigger, alertType):
         
         if "email" in alertType:
             print(text)
-            #send_email(text)
+            send_email(text)
 
         # 微信通知
         text = ""
@@ -117,7 +125,7 @@ def job(FR_trigger, alertType):
             text += "时间: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n" + "\n"
         if "weixin" in alertType:
             print(text)
-            #sendmsg(text)
+            sendmsg(text)
     except Exception as e:
         print(e)
         pass
