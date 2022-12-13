@@ -69,8 +69,7 @@ while True:
     try:
         buy = False
         sell = False
-        if get_left_seconds() <= 100000:
-        #if get_left_seconds() <= 1:
+        if get_left_seconds() <= 1:
             time.sleep(1)
             order = exchange.fetch_order_book(symbol)
             bid = order["bids"][0][0]
@@ -78,74 +77,94 @@ while True:
             #print(type(ask))
             ################## 买入
             if frate < 0:
-                tpTriggerPx = ask * (1 + abs(frate))
+                buy_price = ask * (1 - abs(frate))
+                print("买入价格:", buy_price)
+                tpTriggerPx = ask
+                print("止盈价格:", tpTriggerPx)
                 open = exchange.private_post_trade_order({ \
                         "instId":symbol, \
                         "tdMode": "cross", \
                         "side": "buy", \
                         "posSide": "long", \
                         "ordType": "limit", \
-                        "px": ask, \
+                        "px": buy_price, \
                         "tpTriggerPx": tpTriggerPx, \
                         "tpOrdPx": -1, \
                         "sz": amount \
                     })
                 orderID = open["data"][0]["ordId"]
-                print("orderID:", orderID)
-                algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
-                print(algoId)
-                algoId = algoId["data"][0]["algoId"]
-                print(algoId)
-            
+                print("委托下单编号:", orderID)
+
                 time.sleep(last_time)
                 try:
-                    cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
-                    print(cancel_algos)
+                    cancel_order = exchange.private_post_trade_cancel_order({"instId": symbol, "ordId": orderID})
+                    print("撤销订单成功", cancel_order)
                 except Exception as e:
-                    print(type(e).__name__, str(e))
+                    print(type(e).__name__, str(e), "撤销订单失败")
+                    pass
+
+                try:
+                    algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
+                    #print(algoId)
+                    algoId = algoId["data"][0]["algoId"]
+                    print(algoId)
+                    cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
+                    print("止盈策略撤销成功", cancel_algos)
+                except Exception as e:
+                    print(type(e).__name__, str(e), "止盈策略撤销失败")
                     pass
                 try:
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
-                    print(close, "closed")
+                    print(close, "平仓")
                 except Exception as e:
-                    print(type(e).__name__, str(e))
-                    pass 
+                    print(type(e).__name__, str(e), "仓位不存在")
+                    break 
                 break
             ################## 卖出
             if frate > 0:
-                tpTriggerPx = bid * (1 - abs(frate))
+                sell_price = bid * (1 + abs(frate))
+                print("卖出价格:", sell_price)
+                tpTriggerPx = bid
+                print("止盈价格:", tpTriggerPx)
                 open = exchange.private_post_trade_order({ \
                         "instId":symbol, \
                         "tdMode": "cross", \
                         "side": "sell", \
                         "posSide": "short", \
                         "ordType": "limit", \
-                        "px": ask, \
+                        "px": sell_price, \
                         "tpTriggerPx": tpTriggerPx, \
                         "tpOrdPx": -1, \
                         "sz": amount \
                     })
                 orderID = open["data"][0]["ordId"]
-                print("orderID:", orderID)
-                algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
-                print(algoId)
-                algoId = algoId["data"][0]["algoId"]
-                print(algoId)
+                print("委托下单编号:", orderID)
+
                 time.sleep(last_time)
                 try:
-                    cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
-                    print(cancel_algos)
+                    cancel_order = exchange.private_post_trade_cancel_order({"instId": symbol, "ordId": orderID})
+                    print("撤销订单成功", cancel_order)
                 except Exception as e:
                     print(type(e).__name__, str(e))
+                    pass
+                try:
+                    algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
+                    #print(algoId)
+                    algoId = algoId["data"][0]["algoId"]
+                    print(algoId)
+                    cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
+                    print("止盈策略撤销成功", cancel_algos)
+                except Exception as e:
+                    print(type(e).__name__, str(e), "止盈策略撤销失败")
                     pass
                 try:
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "short"})
-                    print(close, "closed")
+                    print(close, "平仓")
                 except Exception as e:
-                    print(type(e).__name__, str(e))
-                    pass
+                    print(type(e).__name__, str(e), "仓位不存在")
+                    break
                 break
         time.sleep(1)
     except Exception as e:
         print(type(e).__name__, str(e))
-        pass
+        break
