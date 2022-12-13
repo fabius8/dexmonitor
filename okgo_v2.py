@@ -58,7 +58,7 @@ def get_left_seconds():
     seconds = diff.total_seconds()
     left_seconds = 1 - (int(seconds * 1000000) / int(3600 * 8 * 1000000) - int(seconds * 1000000) // int(3600 * 8 * 1000000))
     next_time = now + timedelta(seconds = left_seconds * 3600 * 8)
-    print("距离下次资费结算时间", next_time,"还剩下:", int(left_seconds * 3600 * 8), "秒")
+    print("距离下次资费结算时间", next_time,"还剩下:", int(left_seconds * 3600 * 8), "秒", end = '\r')
     return left_seconds * 3600 * 8
 
 
@@ -70,7 +70,8 @@ while True:
         buy = False
         sell = False
         if get_left_seconds() <= 1:
-            time.sleep(1)
+            # 开始 x 秒
+            time.sleep(open_second)
             order = exchange.fetch_order_book(symbol)
             bid = order["bids"][0][0]
             ask = order["asks"][0][0]
@@ -95,12 +96,13 @@ while True:
                 orderID = open["data"][0]["ordId"]
                 print("委托下单编号:", orderID)
 
+                # 结束时间
                 time.sleep(last_time)
                 try:
                     cancel_order = exchange.private_post_trade_cancel_order({"instId": symbol, "ordId": orderID})
                     print("撤销订单成功", cancel_order)
                 except Exception as e:
-                    print(type(e).__name__, str(e), "撤销订单失败")
+                    print("撤销订单失败", type(e).__name__, str(e))
                     pass
 
                 try:
@@ -111,13 +113,13 @@ while True:
                     cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
                     print("止盈策略撤销成功", cancel_algos)
                 except Exception as e:
-                    print(type(e).__name__, str(e), "止盈策略撤销失败")
+                    print("止盈策略撤销失败", type(e).__name__, str(e))
                     pass
                 try:
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "long"})
-                    print(close, "平仓")
+                    print("平仓", close)
                 except Exception as e:
-                    print(type(e).__name__, str(e), "仓位不存在")
+                    print("仓位不存在", type(e).__name__, str(e))
                     break 
                 break
             ################## 卖出
@@ -145,7 +147,7 @@ while True:
                     cancel_order = exchange.private_post_trade_cancel_order({"instId": symbol, "ordId": orderID})
                     print("撤销订单成功", cancel_order)
                 except Exception as e:
-                    print(type(e).__name__, str(e))
+                    print("撤销订单失败", type(e).__name__, str(e))
                     pass
                 try:
                     algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
@@ -155,13 +157,13 @@ while True:
                     cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
                     print("止盈策略撤销成功", cancel_algos)
                 except Exception as e:
-                    print(type(e).__name__, str(e), "止盈策略撤销失败")
+                    print("止盈策略撤销失败", type(e).__name__, str(e))
                     pass
                 try:
                     close = exchange.private_post_trade_close_position({"instId":symbol, "mgnMode":"cross", "posSide": "short"})
-                    print(close, "平仓")
+                    print("平仓", close)
                 except Exception as e:
-                    print(type(e).__name__, str(e), "仓位不存在")
+                    print("仓位不存在", type(e).__name__, str(e))
                     break
                 break
         time.sleep(1)
