@@ -96,8 +96,8 @@ while True:
                 orderID = open["data"][0]["ordId"]
                 print("委托下单编号:", orderID)
 
-                # 结束时间
-                time.sleep(last_time)
+                # 结束时间第5秒
+                time.sleep(5 - open_second)
                 try:
                     cancel_order = exchange.private_post_trade_cancel_order({"instId": symbol, "ordId": orderID})
                     print("撤销订单成功", cancel_order)
@@ -105,13 +105,16 @@ while True:
                     print("撤销订单失败", type(e).__name__, str(e))
                     pass
 
+                # 结束时间第15秒
+                time.sleep(close_second - 5)
                 try:
                     algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
                     #print(algoId)
-                    algoId = algoId["data"][0]["algoId"]
-                    print(algoId)
-                    cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
-                    print("止盈策略撤销成功", cancel_algos)
+                    for i in algoId["data"]:
+                        algoId = i["algoId"]
+                        print(algoId)
+                        cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
+                        print("止盈策略撤销成功", cancel_algos)
                 except Exception as e:
                     print("止盈策略撤销失败", type(e).__name__, str(e))
                     pass
@@ -142,19 +145,23 @@ while True:
                 orderID = open["data"][0]["ordId"]
                 print("委托下单编号:", orderID)
 
-                time.sleep(last_time)
+                # 结束时间第5秒
+                time.sleep(5 - open_second)
                 try:
                     cancel_order = exchange.private_post_trade_cancel_order({"instId": symbol, "ordId": orderID})
                     print("撤销订单成功", cancel_order)
                 except Exception as e:
                     print("撤销订单失败", type(e).__name__, str(e))
                     pass
+                # 结束时间第15秒
+                time.sleep(close_second - 5)
                 try:
                     algoId = exchange.private_get_trade_orders_algo_pending({"ordType":"conditional"})
                     #print(algoId)
-                    algoId = algoId["data"][0]["algoId"]
-                    print(algoId)
-                    cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
+                    for i in algoId["data"]:
+                        algoId = i["algoId"]
+                        print(algoId)
+                        cancel_algos = exchange.private_post_trade_cancel_algos([{"algoId":algoId, "instId": symbol}])
                     print("止盈策略撤销成功", cancel_algos)
                 except Exception as e:
                     print("止盈策略撤销失败", type(e).__name__, str(e))
