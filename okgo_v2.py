@@ -78,7 +78,7 @@ while True:
             #print(type(ask))
             ################## 买入
             if frate < 0:
-                buy_price = ask * (1 - abs(frate))
+                buy_price = ask * (1 - abs(frate)/2)
                 print("买入价格:", buy_price)
                 tpTriggerPx = ask
                 print("止盈价格:", tpTriggerPx)
@@ -127,7 +127,7 @@ while True:
                 break
             ################## 卖出
             if frate > 0:
-                sell_price = bid * (1 + abs(frate))
+                sell_price = bid * (1 + abs(frate)/2)
                 print("卖出价格:", sell_price)
                 tpTriggerPx = bid
                 print("止盈价格:", tpTriggerPx)
