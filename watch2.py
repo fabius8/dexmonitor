@@ -74,7 +74,7 @@ async def watch_loop(exchange, symbol, n):
             text = "品种:" + symbol + "\n"
             text += "饺易所:" + str(exchange) + "\n"
             text += "k线周期:" + timeframe + "\n"
-            text += "波动:" + format(cur, "+.2f") + "\n"
+            text += "波动:" + format(cur * 100, "+.2f") + "%" + "\n"
             text += "时间:" + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             await sendToWechat(text)
             
