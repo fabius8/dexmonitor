@@ -39,7 +39,7 @@ def get_profit_by_day_deribit(filter):
                 diff = T2 - ts
                 left_day = float(diff) / (3600*24)
                 profit = int(float(i["bid_price"]) * float(i["estimated_delivery_price"]))
-                result.append({"left_day": int(left_day), "instrument_name": i["instrument_name"], "profit": profit, "day_profit": int(profit/left_day)})
+                result.append({"left_day": int(left_day), "instrument_name": i["instrument_name"], "price": profit, "day_profit": int(profit/left_day)})
     result.sort(key=lambda x: x["left_day"], reverse=False)
     for i in result:
         print(i)
@@ -71,6 +71,3 @@ def get_profit_by_day(filter):
 
 get_profit_by_day(filter)
 
-#data = exchange.public_get_public_instruments({"instType": "OPTION", "uly": symbol + "-USD"})["data"]
-#for i in data:
-#    get_profit_by_day(i["instId"][8:14])
