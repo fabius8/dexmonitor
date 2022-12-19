@@ -109,22 +109,24 @@ while True:
             print("S diff", ":",  "%.2f" %sell_diff, "%")
 
             if buy_diff > 2.2:
-                text = token["symbol"] + " " + token["contract"] + "\n"
-                text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
-                text += "binance price " + ": " + str(bid) + "\n"
-                print("😱 profit is big! Pancake -> Binance ")
-                text += "pancake B price" + ": " + str(buyPrice) + " Amount: " +  str(buyAmount) + "\n"
-                text += "😱 profit is big! Pancake -> Binance" + " diff: " + format(buy_diff, ".2f") + "%" + "\n"
+                text = "品种:" + token["symbol"] + "\n"
+                text += "合约:" + token["contract"] + "\n"
+                text += "时间:" + datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
+                text += "Binance价格:" + str(bid) + "\n"
+                text += "pancake价格:" + str(buyPrice) + "\n"
+                text += "可交易数量: " +  str(buyAmount) + "\n"
+                text += "价差:" + format(buy_diff, ".2f") + "%" + "\n"
                 sendmsg(text)
                 beep()
             print(" ")
             if sell_diff > 2.2:
-                text = token["symbol"] + " " + token["contract"] + "\n"
-                text += datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
-                text += "binance price " + ": " + str(bid) + "\n"
-                print("😱 profit is big! Binance -> Pancake ")
-                text += "pancake S price" + ": " + str(sellPrice) + " Amount: " + str(sellAmount) + "\n"
-                text += "😱 profit is big! Binance -> Pancake"  + " diff: " + format(sell_diff, ".2f") + "%" +  "\n"
+                text = "品种:" + token["symbol"] + "\n"
+                text += "合约:" + token["contract"] + "\n"
+                text += "时间:" + datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S") + "\n"
+                text += "Binance价格:" + str(bid) + "\n"
+                text += "pancake价格:" + str(sellPrice) + "\n"
+                text += "可交易数量: " +  str(sellAmount) + "\n"
+                text += "价差:" + format(sell_diff, ".2f") + "%" + "\n"
                 sendmsg(text)
                 beep()
             print(" ")
