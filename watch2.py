@@ -88,7 +88,6 @@ async def main(exchange, symbols):
     print(symbols)
     while True:
         await asyncio.gather(*[watch_loop(exchange, symbol, n) for n, symbol in enumerate(symbols)])
-        print("=" * 10)
         await asyncio.sleep(1)
 
 exchange = ccxt.pro.binance()
