@@ -96,7 +96,7 @@ def job(FR_trigger, alertType):
                 alert.append({"s": i["symbol"][0:-4], "u": "BUSD", "e": "Binance", "r": rate, "n": None})
 
         alert.sort(key=lambda x: x["r"], reverse=True)
-        alert = list(filter(lambda x: x["e"] in ["Binance", "OKX"], alert))
+        alert = list(filter(lambda x: x["e"] in ["Binance", "OKX", "Bybit"], alert))
         if len(alert) == 0:
             return
 
