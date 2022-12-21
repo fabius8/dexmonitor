@@ -36,6 +36,7 @@ def get_profit_by_day(filter):
             bid =  price * float(info["data"][0]["bidPx"]) if info["data"][0]["bidPx"] != "" else 0
             day_profit = bid / left_day
             print(info["data"][0]["instId"], "price: ", int(bid), ", day profit", int(day_profit))
+            time.sleep(0.2)
 
 get_profit_by_day(filter)
 
