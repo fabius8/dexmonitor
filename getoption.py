@@ -23,6 +23,7 @@ def get_profit_by_day(filter):
 
     data = exchange.public_get_public_instruments({"instType": "OPTION", "uly": symbol + "-USD"})["data"]
     for i in data:
+        time.sleep(0.2)
         instId = i["instId"]
         info = exchange.public_get_market_ticker({"instId": instId})
         if filter in info["data"][0]["instId"]:
@@ -36,7 +37,7 @@ def get_profit_by_day(filter):
             bid =  price * float(info["data"][0]["bidPx"]) if info["data"][0]["bidPx"] != "" else 0
             day_profit = bid / left_day
             print(info["data"][0]["instId"], "price: ", int(bid), ", day profit", int(day_profit))
-            time.sleep(0.2)
+            
 
 get_profit_by_day(filter)
 
